@@ -1,0 +1,41 @@
+# Example CloudFormation template with security issues for testing
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Example template with security issues
+
+Resources:
+  PublicS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: my-public-bucket
+      # SECURITY ISSUE: No PublicAccessBlockConfiguration
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+
+  PublicEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-12345678
+      InstanceType: t3.micro
+      # SECURITY ISSUE: No encryption specified
+      SecurityGroupIds:
+        - !Ref OpenSecurityGroup
+
+  OpenSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open security group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0  # SECURITY ISSUE: Open SSH to internet
+
+Outputs:
+  BucketName:
+    Description: Name of the S3 bucket
+    Value: !Ref PublicS3Bucket
+

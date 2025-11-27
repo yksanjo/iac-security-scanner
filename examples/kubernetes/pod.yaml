@@ -1,0 +1,20 @@
+# Example Kubernetes pod with security issues for testing
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: insecure-pod
+  labels:
+    app: example
+spec:
+  containers:
+  - name: app
+    image: nginx:latest
+    # SECURITY ISSUE: No resource limits
+    ports:
+    - containerPort: 80
+  - name: sidecar
+    image: busybox:latest
+    # SECURITY ISSUE: No resource limits
+    command: ["sleep", "3600"]
+

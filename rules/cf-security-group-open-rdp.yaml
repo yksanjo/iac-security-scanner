@@ -1,0 +1,37 @@
+id: cf-security-group-open-rdp
+name: CloudFormation Security Group with Open RDP Access
+description: CloudFormation template creates security group allowing RDP (port 3389) from the internet.
+severity: critical
+type: cloudformation
+compliance:
+  - soc2
+  - pci-dss
+  - hipaa
+conditions:
+  - resource: AWS::EC2::SecurityGroup
+    property: SecurityGroupIngress.FromPort
+    operator: equals
+    value: 3389
+  - resource: AWS::EC2::SecurityGroup
+    property: SecurityGroupIngress.CidrIp
+    operator: equals
+    value: 0.0.0.0/0
+remediation:
+  description: Restrict RDP access to specific IP addresses or use a VPN/bastion host.
+  steps:
+    - Change CidrIp from 0.0.0.0/0 to specific IP ranges
+    - Use VPN or bastion host for RDP access
+    - Consider using AWS Systems Manager Session Manager
+  code_example: |
+    Resources:
+      RestrictedSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupDescription: Restricted RDP access
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 3389
+              ToPort: 3389
+              CidrIp: 10.0.0.0/8  # Only from VPC
+              # Or: CidrIp: YOUR_IP/32  # Only from your IP
+

@@ -1,0 +1,32 @@
+id: aws-s3-public-access
+name: S3 Bucket Public Access
+description: S3 bucket allows public access, which violates security best practices and compliance requirements.
+severity: critical
+type: terraform
+compliance:
+  - soc2
+  - pci-dss
+  - hipaa
+conditions:
+  - resource: aws_s3_bucket
+    property: acl
+    operator: equals
+    value: public-read
+  - resource: aws_s3_bucket
+    property: acl
+    operator: equals
+    value: public-read-write
+remediation:
+  description: Remove public access from S3 bucket and use IAM policies for controlled access.
+  steps:
+    - Remove 'acl = "public-read"' or 'acl = "public-read-write"' from the bucket resource
+    - Set 'acl = "private"' or remove the acl attribute (defaults to private)
+    - Use bucket policies or IAM policies to grant specific access to authorized users
+    - Enable S3 Block Public Access settings
+  code_example: |
+    resource "aws_s3_bucket" "example" {
+      bucket = "my-secure-bucket"
+      # Remove: acl = "public-read"
+      acl    = "private"  # or omit this line
+    }
+

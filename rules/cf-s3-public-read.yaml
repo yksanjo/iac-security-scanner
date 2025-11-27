@@ -1,0 +1,29 @@
+id: cf-s3-public-read
+name: CloudFormation S3 Bucket Public Read Access
+description: CloudFormation template creates S3 bucket with public read access.
+severity: critical
+type: cloudformation
+compliance:
+  - soc2
+  - pci-dss
+  - hipaa
+conditions:
+  - resource: AWS::S3::Bucket
+    property: PublicAccessBlockConfiguration
+    operator: missing
+remediation:
+  description: Add PublicAccessBlockConfiguration to prevent public access.
+  steps:
+    - Add PublicAccessBlockConfiguration to the S3 bucket resource
+    - Set BlockPublicAcls, BlockPublicPolicy, IgnorePublicAcls, and RestrictPublicBuckets to true
+  code_example: |
+    Resources:
+      MyBucket:
+        Type: AWS::S3::Bucket
+        Properties:
+          PublicAccessBlockConfiguration:
+            BlockPublicAcls: true
+            BlockPublicPolicy: true
+            IgnorePublicAcls: true
+            RestrictPublicBuckets: true
+

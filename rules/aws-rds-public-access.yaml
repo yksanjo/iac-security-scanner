@@ -1,0 +1,30 @@
+id: aws-rds-public-access
+name: RDS Instance with Public Access
+description: RDS database instance is publicly accessible, exposing sensitive data to the internet.
+severity: critical
+type: terraform
+compliance:
+  - soc2
+  - pci-dss
+  - hipaa
+conditions:
+  - resource: aws_db_instance
+    property: publicly_accessible
+    operator: equals
+    value: true
+remediation:
+  description: Disable public access for RDS instance and use VPC security groups for access control.
+  steps:
+    - Set 'publicly_accessible = false' in the RDS instance configuration
+    - Configure VPC and security groups to allow access only from authorized sources
+    - Use VPN or bastion host for database access
+  code_example: |
+    resource "aws_db_instance" "example" {
+      identifier     = "example-db"
+      engine         = "mysql"
+      instance_class = "db.t3.micro"
+      publicly_accessible = false  # Critical: must be false
+      
+      vpc_security_group_ids = [aws_security_group.db.id]
+    }
+

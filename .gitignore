@@ -1,0 +1,36 @@
+# Binaries
+iac-audit
+iac-audit.exe
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Reports
+*.json
+*.pdf
+security-report*
+
+# OS
+.DS_Store
+Thumbs.db
+

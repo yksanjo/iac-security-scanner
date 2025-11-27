@@ -1,0 +1,46 @@
+id: k8s-no-security-context
+name: Kubernetes Pod Without Security Context
+description: Kubernetes pod does not define a security context, which can lead to running containers with excessive privileges.
+severity: high
+type: kubernetes
+compliance:
+  - soc2
+  - pci-dss
+  - hipaa
+conditions:
+  - resource: Pod
+    property: spec.securityContext
+    operator: missing
+  - resource: Deployment
+    property: spec.template.spec.securityContext
+    operator: missing
+remediation:
+  description: Add security context to restrict container privileges and capabilities.
+  steps:
+    - Add securityContext to pod or deployment spec
+    - Set runAsNonRoot to true
+    - Set runAsUser to a non-root user ID
+    - Set readOnlyRootFilesystem to true where possible
+    - Drop all capabilities and add only required ones
+  code_example: |
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: secure-pod
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+      containers:
+      - name: app
+        image: nginx:latest
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+            add:
+            - NET_BIND_SERVICE
+

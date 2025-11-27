@@ -1,0 +1,46 @@
+id: aws-ec2-no-iam-role
+name: EC2 Instance Without IAM Role
+description: EC2 instance does not have an IAM role assigned, which violates the principle of least privilege.
+severity: high
+type: terraform
+compliance:
+  - soc2
+  - pci-dss
+conditions:
+  - resource: aws_instance
+    property: iam_instance_profile
+    operator: missing
+remediation:
+  description: Assign an IAM role to the EC2 instance with minimal required permissions.
+  steps:
+    - Create an IAM role with the minimum required permissions
+    - Create an IAM instance profile
+    - Attach the instance profile to the EC2 instance
+    - Follow the principle of least privilege
+  code_example: |
+    resource "aws_iam_role" "ec2_role" {
+      name = "ec2-role"
+      
+      assume_role_policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [{
+          Action = "sts:AssumeRole"
+          Effect = "Allow"
+          Principal = {
+            Service = "ec2.amazonaws.com"
+          }
+        }]
+      })
+    }
+    
+    resource "aws_iam_instance_profile" "ec2_profile" {
+      name = "ec2-profile"
+      role = aws_iam_role.ec2_role.name
+    }
+    
+    resource "aws_instance" "example" {
+      ami           = "ami-12345678"
+      instance_type = "t3.micro"
+      iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
+    }
+

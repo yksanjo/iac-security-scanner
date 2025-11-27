@@ -1,0 +1,34 @@
+id: cf-ec2-no-encryption
+name: CloudFormation EC2 Instance Without Encryption
+description: CloudFormation template creates EC2 instance without encryption enabled for EBS volumes.
+severity: high
+type: cloudformation
+compliance:
+  - soc2
+  - pci-dss
+  - hipaa
+conditions:
+  - resource: AWS::EC2::Instance
+    property: BlockDeviceMappings.Ebs.Encrypted
+    operator: missing
+remediation:
+  description: Enable encryption for EC2 instance EBS volumes in CloudFormation template.
+  steps:
+    - Add BlockDeviceMappings with Encrypted: true
+    - Specify KmsKeyId for encryption key management
+    - Ensure all EBS volumes are encrypted
+  code_example: |
+    Resources:
+      MyInstance:
+        Type: AWS::EC2::Instance
+        Properties:
+          ImageId: ami-12345678
+          InstanceType: t3.micro
+          BlockDeviceMappings:
+            - DeviceName: /dev/sda1
+              Ebs:
+                VolumeSize: 20
+                VolumeType: gp3
+                Encrypted: true
+                KmsKeyId: !Ref MyKmsKey
+

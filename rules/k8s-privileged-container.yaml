@@ -1,0 +1,43 @@
+id: k8s-privileged-container
+name: Kubernetes Privileged Container
+description: Kubernetes container is running in privileged mode, which grants excessive permissions and is a critical security risk.
+severity: critical
+type: kubernetes
+compliance:
+  - soc2
+  - pci-dss
+  - hipaa
+conditions:
+  - resource: Pod
+    property: spec.containers.securityContext.privileged
+    operator: equals
+    value: true
+  - resource: Deployment
+    property: spec.template.spec.containers.securityContext.privileged
+    operator: equals
+    value: true
+remediation:
+  description: Remove privileged mode and use specific capabilities instead.
+  steps:
+    - Set securityContext.privileged to false or remove it
+    - Use specific capabilities instead of privileged mode
+    - Review if privileged mode is actually required
+    - Consider using init containers or sidecars for privileged operations
+  code_example: |
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: non-privileged-pod
+    spec:
+      containers:
+      - name: app
+        image: nginx:latest
+        securityContext:
+          privileged: false  # Remove or set to false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+            add:
+            - NET_BIND_SERVICE  # Only add required capabilities
+

@@ -1,0 +1,38 @@
+id: aws-security-group-open-ssh
+name: Security Group with Open SSH Access
+description: Security group allows SSH (port 22) access from the internet (0.0.0.0/0), which is a critical security risk.
+severity: critical
+type: terraform
+compliance:
+  - soc2
+  - pci-dss
+  - hipaa
+conditions:
+  - resource: aws_security_group
+    property: ingress.from_port
+    operator: equals
+    value: 22
+  - resource: aws_security_group
+    property: ingress.cidr_blocks
+    operator: contains
+    value: 0.0.0.0/0
+remediation:
+  description: Restrict SSH access to specific IP addresses or use a bastion host.
+  steps:
+    - Remove or restrict the CIDR block from 0.0.0.0/0 to specific IP ranges
+    - Use a bastion host or VPN for SSH access
+    - Consider using AWS Systems Manager Session Manager instead of SSH
+    - Implement IP whitelisting for administrative access
+  code_example: |
+    resource "aws_security_group" "example" {
+      name = "restricted-ssh"
+      
+      ingress {
+        from_port   = 22
+        to_port     = 22
+        protocol    = "tcp"
+        cidr_blocks = ["10.0.0.0/8"]  # Only from VPC
+        # Or use: cidr_blocks = ["YOUR_IP/32"]  # Only from your IP
+      }
+    }
+

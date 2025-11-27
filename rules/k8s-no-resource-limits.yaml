@@ -1,0 +1,34 @@
+id: k8s-no-resource-limits
+name: Kubernetes Pod Without Resource Limits
+description: Kubernetes pod does not specify resource limits, which can lead to resource exhaustion and security issues.
+severity: medium
+type: kubernetes
+compliance:
+  - soc2
+conditions:
+  - resource: Pod
+    property: spec.containers.resources.limits
+    operator: missing
+remediation:
+  description: Add resource limits to all containers in the pod specification.
+  steps:
+    - Add 'resources' section to each container in the pod spec
+    - Specify 'limits' for CPU and memory
+    - Optionally specify 'requests' for resource guarantees
+  code_example: |
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: example-pod
+    spec:
+      containers:
+      - name: app
+        image: nginx:latest
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+

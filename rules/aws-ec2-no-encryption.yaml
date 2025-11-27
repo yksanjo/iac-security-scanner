@@ -1,0 +1,33 @@
+id: aws-ec2-no-encryption
+name: EC2 Instance Without Encryption
+description: EC2 instance storage is not encrypted, which violates data protection requirements.
+severity: high
+type: terraform
+compliance:
+  - soc2
+  - pci-dss
+  - hipaa
+conditions:
+  - resource: aws_instance
+    property: root_block_device.encrypted
+    operator: missing
+  - resource: aws_instance
+    property: ebs_block_device.encrypted
+    operator: missing
+remediation:
+  description: Enable encryption for EC2 instance storage volumes.
+  steps:
+    - Add 'encrypted = true' to root_block_device configuration
+    - Add 'encrypted = true' to all ebs_block_device configurations
+    - Ensure KMS key is specified for encryption
+  code_example: |
+    resource "aws_instance" "example" {
+      ami           = "ami-12345678"
+      instance_type = "t3.micro"
+      
+      root_block_device {
+        encrypted = true
+        kms_key_id = "arn:aws:kms:region:account:key/key-id"
+      }
+    }
+
