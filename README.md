@@ -136,7 +136,7 @@ The Infrastructure-as-Code Security Scanner is a powerful CLI tool that automati
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/iac-security-scanner.git
+git clone https://github.com/yksanjo/iac-security-scanner.git
 cd iac-security-scanner
 
 # Install dependencies
@@ -623,7 +623,7 @@ For licensing inquiries: **licensing@iac-security-scanner.com**
 
 - 📧 **Email**: support@iac-security-scanner.com
 - 📚 **Documentation**: [Full Docs](QUICKSTART.md)
-- 🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/iac-security-scanner/issues)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/yksanjo/iac-security-scanner/issues)
 
 ---
 
