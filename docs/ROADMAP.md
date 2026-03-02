@@ -1,3 +1,7 @@
 # Roadmap
 
-Track near-term milestones, technical debt, and planned improvements.
+## Next Milestones
+
+- Add domain-specific scoring rules for security.
+- Add integration tests for the go runtime path.
+- Add deployment profile and operational runbooks.
